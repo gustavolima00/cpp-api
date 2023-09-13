@@ -15,10 +15,14 @@ RUN pip3 install conan==1.61.0
 # Copie o projeto para o container
 COPY . /app
 WORKDIR /app
-RUN rm -rf build
 
-# Instale as dependências do projeto com Conan
-RUN mkdir build && cd build && \
+# Configure o Conan
+RUN conan profile new default --detect && conan profile update settings.compiler.libcxx=libstdc++11 default
+
+# Prepara a pasta build
+RUN rm -rf build && \
+  mkdir build && \
+  cd build && \
   conan install .. --build=missing && \
   cmake .. && \
   make
