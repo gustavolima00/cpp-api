@@ -2,5 +2,4 @@
 restinio/0.6.13
 
 [generators]
-CMakeDeps
-CMakeToolchain
+cmake

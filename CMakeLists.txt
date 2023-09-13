@@ -1,14 +1,22 @@
-cmake_minimum_required(VERSION 3.15)  # Versão mínima do CMake
+cmake_minimum_required(VERSION 3.15)
+project(MyAPIProject)
 
-project(MyAPIProject)  # Nome do seu projeto
+# Integre Conan com CMake
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
-set(CMAKE_CXX_STANDARD 17)  # Versão do C++
+# Especifique a versão do C++ (por exemplo, C++17)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Importe as configurações do Conan
-include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
+# Adicione todos os arquivos .cpp na pasta src
+file(GLOB SOURCES "src/*.cpp")
 
-# Adicione os arquivos do seu projeto aqui
-add_executable(MyAPIProject src/main.cpp src/api_handlers.cpp)
+# Crie o executável
+add_executable(MyAPIProject ${SOURCES})
 
-# Link com as bibliotecas do Conan
+# Link Conan libs
 target_link_libraries(MyAPIProject ${CONAN_LIBS})
+
+# Incluir o diretório onde api_handlers.h está
+target_include_directories(MyAPIProject PUBLIC include/)

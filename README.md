@@ -1,52 +1,73 @@
-Claro! Abaixo está o seu arquivo `README.md` atualizado para incluir informações sobre como instalar dependências via Conan.
+# API em C++
 
----
-
-# My API Project
-
-Este é um projeto de exemplo que demonstra uma API simples escrita em C++. O projeto inclui exemplos de inicialização de uma API e manipulação de uma requisição HTTP fictícia.
+Este é um exemplo de projeto API em C++ que utiliza Conan para gerenciar dependências e Docker para facilitar o desenvolvimento e a implantação.
 
 ## Pré-requisitos
 
-- Um compilador C++ (g++, clang, etc.)
-- GNU Make
-- Terminal para executar comandos de shell
-- Conan (Gerenciador de Pacotes para C++)
+- CMake >= 3.15
+- Compilador C++ compatível com C++17 (GCC, Clang, MSVC, etc.)
+- Conan
+- Docker (opcional)
 
-## Instalação de Dependências com Conan
+## Executando o Projeto Localmente
 
-Para instalar as dependências necessárias para este projeto, você precisará usar o Conan, um gerenciador de pacotes para C++. Se você ainda não tem Conan instalado, você pode instalá-lo usando pip:
+### Usando Conan 1.61.0 para Instalar Dependências
 
-```bash
-pip3 install conan==1.61.0
-```
-
-Depois de instalar o Conan, navegue até o diretório raiz do projeto e execute o seguinte comando para instalar as dependências:
+#### Instalando o Conan
 
 ```bash
-conan install . --build=missing
+pip install conan==1.61.0
 ```
 
-Isso instalará todas as bibliotecas necessárias que estão especificadas no arquivo `conanfile.txt` do projeto.
+#### Instalando Dependências
 
-## Como Compilar e Executar
-
-1. Abra o Terminal e navegue até o diretório onde você salvou o projeto.
-2. Configure um profile para o conan caso não exista um
+1. Abra um terminal e navegue até o diretório do projeto.
+2. Crie um diretório de build e navegue até ele:
 
    ```bash
-   conan profile detect
+   mkdir build
+   cd build
    ```
 
-3. Instale as dependências utilizando Conan:
+3. Instale as dependências usando Conan:
 
    ```bash
-   conan install . --build=missing
+   conan install .. --build=missing
    ```
 
-4. Execute o comando `make` para compilar o projeto. Isso criará um diretório `build/` contendo o executável `my_api_project`.
-5. Para executar o projeto, execute o seguinte comando:
+4. Gere os arquivos de build usando CMake:
 
    ```bash
-   ./build/my_api_project
+   cmake ..
    ```
+
+5. Compile o projeto:
+
+   ```bash
+   make
+   ```
+
+6. Execute o projeto:
+
+   ```bash
+   ./bin/MyAPIProject
+   ```
+
+### Usando Docker
+
+Se você preferir usar Docker, você pode construir e rodar uma imagem Docker do projeto.
+
+1. Abra um terminal e navegue até o diretório do projeto.
+2. Construa a imagem Docker:
+
+   ```bash
+   docker build -t my_api_project .
+   ```
+
+3. Rode a imagem Docker:
+
+   ```bash
+   docker run -p 8080:8080 my_api_project
+   ```
+
+Com isso, seu serviço deve estar rodando na porta `8080` e você pode acessá-lo através de `http://localhost:8080`.
