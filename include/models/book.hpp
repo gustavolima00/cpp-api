@@ -21,4 +21,5 @@ public:
 
   std::string author;
   std::string title;
+  uint32_t id;
 };
