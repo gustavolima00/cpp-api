@@ -25,7 +25,4 @@ public:
   book_collection_t get_by_author(const std::string &author) const;
 
   BooksRepository();
-
-private:
-  std::unordered_map<uint32_t, Book> books_map;
 };
