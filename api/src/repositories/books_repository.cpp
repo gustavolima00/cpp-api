@@ -1,8 +1,8 @@
 #include "repositories/books_repository.hpp"
 #include <pqxx/pqxx>
 
-const std::string CONNECTION_STRING = "postgresql://postgres:postgres@localhost:5432/gustavolima";
-// const std::string CONNECTION_STRING = "postgresql://postgres:postgres@database:5432/postgres";
+// const std::string CONNECTION_STRING = "postgresql://postgres:postgres@localhost:5432/gustavolima";
+const std::string CONNECTION_STRING = "postgresql://postgres:postgres@database:5432/postgres";
 
 book_collection_t from_result_to_books(pqxx::result &r)
 {
