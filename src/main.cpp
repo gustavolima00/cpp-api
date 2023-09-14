@@ -12,41 +12,21 @@ using book_collection_t = std::vector<Book>;
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
 
-auto server_handler()
+void register_books_routes(std::unique_ptr<router_t> &router)
 {
-  auto router = std::make_unique<router_t>();
   auto handler = std::make_shared<BooksRequestsHandler>();
-
   auto by = [&](auto method)
   {
     using namespace std::placeholders;
     return std::bind(method, handler, _1, _2);
   };
 
-  auto method_not_allowed = [](const auto &req, auto)
-  {
-    return req->create_response(restinio::status_method_not_allowed())
-        .connection_close()
-        .done();
-  };
-
   // Handlers for '/' path.
   router->http_get("/", by(&BooksRequestsHandler::on_books_list));
   router->http_post("/", by(&BooksRequestsHandler::on_new_book));
 
-  // Disable all other methods for '/'.
-  router->add_handler(
-      restinio::router::none_of_methods(
-          restinio::http_method_get(), restinio::http_method_post()),
-      "/", method_not_allowed);
-
   // Handler for '/author/:author' path.
   router->http_get("/author/:author", by(&BooksRequestsHandler::on_author_get));
-
-  // Disable all other methods for '/author/:author'.
-  router->add_handler(
-      restinio::router::none_of_methods(restinio::http_method_get()),
-      "/author/:author", method_not_allowed);
 
   // Handlers for '/:id' path.
   router->http_get(
@@ -58,14 +38,13 @@ auto server_handler()
   router->http_delete(
       R"(/:id(\d+))",
       by(&BooksRequestsHandler::on_book_delete));
+}
 
-  // Disable all other methods for '/:id'.
-  router->add_handler(
-      restinio::router::none_of_methods(
-          restinio::http_method_get(),
-          restinio::http_method_post(),
-          restinio::http_method_delete()),
-      R"(/:id(\d+))", method_not_allowed);
+auto server_handler()
+{
+  auto router = std::make_unique<router_t>();
+
+  register_books_routes(router);
 
   return router;
 }

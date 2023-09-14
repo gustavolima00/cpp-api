@@ -117,6 +117,9 @@ public:
     {
       const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
       books_repository.delete_book(id);
+      auto response = init_response(req->create_response(), "text/plain");
+      set_response_status(response, ResponseStatus::OK);
+      return response.done();
     }
     catch (const std::exception &ex)
     {
