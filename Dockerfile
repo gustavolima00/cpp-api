@@ -19,7 +19,7 @@ WORKDIR /app
 # Configure o Conan
 RUN conan profile new default --detect && conan profile update settings.compiler.libcxx=libstdc++11 default
 
-# Prepara a pasta build
+# Instale as dependências e compile o projeto
 RUN rm -rf build && \
   mkdir build && \
   cd build && \
@@ -28,4 +28,4 @@ RUN rm -rf build && \
   make
 
 # Comando para executar o projeto
-CMD ["./build/bin/MyAPIProject"]
+CMD ["./build/bin/ApiProject"]
