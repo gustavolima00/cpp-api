@@ -2,7 +2,6 @@
 
 #include <restinio/all.hpp>
 #include "requests/books_router.hpp"
-#include <pqxx/pqxx>
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
