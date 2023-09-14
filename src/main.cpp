@@ -1,50 +1,19 @@
 #include <iostream>
 
 #include <restinio/all.hpp>
-#include <json_dto/pub.hpp>
-#include "models/book.hpp"
 #include "repositories/books_repository.hpp"
 #include "requests/books_requests_handler.hpp"
-#include <functional>
+#include "requests/books_router.hpp"
 
 using book_collection_t = std::vector<Book>;
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
 
-void register_books_routes(std::unique_ptr<router_t> &router)
-{
-  auto handler = std::make_shared<BooksRequestsHandler>();
-  auto by = [&](auto method)
-  {
-    using namespace std::placeholders;
-    return std::bind(method, handler, _1, _2);
-  };
-
-  // Handlers for '/' path.
-  router->http_get("/", by(&BooksRequestsHandler::on_books_list));
-  router->http_post("/", by(&BooksRequestsHandler::on_new_book));
-
-  // Handler for '/author/:author' path.
-  router->http_get("/author/:author", by(&BooksRequestsHandler::on_author_get));
-
-  // Handlers for '/:id' path.
-  router->http_get(
-      R"(/:id(\d+))",
-      by(&BooksRequestsHandler::on_book_get));
-  router->http_put(
-      R"(/:id(\d+))",
-      by(&BooksRequestsHandler::on_book_update));
-  router->http_delete(
-      R"(/:id(\d+))",
-      by(&BooksRequestsHandler::on_book_delete));
-}
-
 auto server_handler()
 {
   auto router = std::make_unique<router_t>();
-
-  register_books_routes(router);
+  BooksRouter::getInstance().register_routes(router);
 
   return router;
 }

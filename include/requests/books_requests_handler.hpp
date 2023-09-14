@@ -16,9 +16,12 @@ using router_t = rr::express_router_t<>;
 class BooksRequestsHandler : BaseRequestHandler
 {
 public:
-  explicit BooksRequestsHandler()
+  BooksRequestsHandler() {}
+
+  static BooksRequestsHandler &getInstance()
   {
-    BooksRepository &books_repository = BooksRepository::getInstance();
+    static BooksRequestsHandler instance;
+    return instance;
   }
 
   BooksRequestsHandler(const BooksRequestsHandler &) = delete;
@@ -29,7 +32,7 @@ public:
   {
     try
     {
-      auto books = books_repository.get_books();
+      auto books = BooksRepository::getInstance().get_books();
       auto response = init_response(req->create_response(), "application/json");
       return return_as_json(response, books);
     }
@@ -45,7 +48,7 @@ public:
     try
     {
       const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-      auto book = books_repository.get_book(id);
+      auto book = BooksRepository::getInstance().get_book(id);
 
       auto response = init_response(req->create_response(), "application/json");
       return return_as_json(response, book);
@@ -63,7 +66,7 @@ public:
     try
     {
       auto author = restinio::utils::unescape_percent_encoding(params["author"]);
-      auto books = books_repository.get_by_author(author);
+      auto books = BooksRepository::getInstance().get_by_author(author);
 
       auto response = init_response(req->create_response(), "application/json");
       return return_as_json(response, books);
@@ -81,7 +84,7 @@ public:
     try
     {
       Book new_book = json_dto::from_json<Book>(req->body());
-      books_repository.add_book(new_book);
+      BooksRepository::getInstance().add_book(new_book);
       auto response = init_response(req->create_response(), "application/json");
       return return_as_json(response, new_book);
     }
@@ -93,13 +96,12 @@ public:
   }
 
   auto on_book_update(
-      const restinio::request_handle_t &req, rr::route_params_t params)
+      const restinio::request_handle_t &req, rr::route_params_t)
   {
     try
     {
-      const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
       Book book = json_dto::from_json<Book>(req->body());
-      books_repository.update_book(book);
+      BooksRepository::getInstance().update_book(book);
       auto response = init_response(req->create_response(), "application/json");
       return return_as_json(response, book);
     }
@@ -116,7 +118,7 @@ public:
     try
     {
       const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-      books_repository.delete_book(id);
+      BooksRepository::getInstance().delete_book(id);
       auto response = init_response(req->create_response(), "text/plain");
       set_response_status(response, ResponseStatus::OK);
       return response.done();
@@ -127,7 +129,4 @@ public:
       return return_internal_server_error(response, ex);
     }
   }
-
-private:
-  BooksRepository books_repository;
 };
