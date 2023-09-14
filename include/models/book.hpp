@@ -6,12 +6,8 @@
 class Book
 {
 public:
-  Book() = default;
-
-  Book(const std::string &_author, const std::string &_title)
-      : author(_author), title(_title)
-  {
-  }
+  Book();
+  Book(const std::string &author, const std::string &title);
 
   template <typename JSON_IO>
   void json_io(JSON_IO &io)

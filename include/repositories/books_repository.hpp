@@ -4,68 +4,27 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include <vector>
+#include <cstdint>
 
 using book_collection_t = std::vector<Book>;
 
 class BooksRepository
 {
 public:
-  static BooksRepository &getInstance()
-  {
-    static BooksRepository instance;
-    return instance;
-  }
+  static BooksRepository &getInstance();
 
   // Delete copy constructor and assignment operator
   BooksRepository(BooksRepository const &) = delete;
   void operator=(BooksRepository const &) = delete;
 
-  book_collection_t get_books() const
-  {
-    std::vector<Book> books;
-    for (auto &kv : books_map)
-    {
-      books.push_back(kv.second);
-    }
-    return books;
-  }
+  book_collection_t get_books() const;
+  Book get_book(std::uint32_t id) const;
+  void add_book(Book book);
+  void update_book(const Book &book);
+  void delete_book(std::uint32_t id);
+  book_collection_t get_by_author(const std::string &author) const;
 
-  Book get_book(std::uint32_t id) const
-  {
-    return books_map.at(id);
-  }
-
-  void add_book(Book book)
-  {
-    book.id = next_id++;
-    books_map[book.id] = book;
-  }
-
-  void update_book(const Book &book)
-  {
-    books_map[book.id] = book;
-  }
-
-  void delete_book(std::uint32_t id)
-  {
-    books_map.erase(id);
-  }
-
-  book_collection_t get_by_author(const std::string &author) const
-  {
-    std::vector<Book> books;
-    for (auto &kv : books_map)
-    {
-      if (kv.second.author == author)
-      {
-        books.push_back(kv.second);
-      }
-    }
-    return books;
-  }
-
-  BooksRepository() = default;
+  BooksRepository();
 
 private:
   std::unordered_map<uint32_t, Book> books_map;
