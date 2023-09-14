@@ -4,13 +4,15 @@
 #include <json_dto/pub.hpp>
 #include "models/book.hpp"
 #include "repositories/books_repository.hpp"
+#include "requests/base_request_handler.hpp"
+#include <functional>
 
 using book_collection_t = std::vector<Book>;
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
 
-class books_handler_t
+class books_handler_t : BaseRequestHandler
 {
 public:
   explicit books_handler_t()
@@ -27,22 +29,13 @@ public:
     auto resp = init_resp(req->create_response());
     auto books = books_repository.get_books();
 
-    resp.set_body(
-        "Book collection (book count: " +
-        std::to_string(books.size()) + ")\n");
-
-    for (std::size_t i = 0; i < books.size(); ++i)
-    {
-      resp.append_body(std::to_string(i + 1) + ". ");
-      const auto &b = books[i];
-      resp.append_body(b.title + "[" + b.author + "]\n");
-    }
+    set_response_status(resp, ResponseStatus::OK);
+    set_response_body_as_json(resp, books);
 
     return resp.done();
   }
 
-  auto on_book_get(
-      const restinio::request_handle_t &req, rr::route_params_t params)
+  auto on_book_get(const restinio::request_handle_t &req, rr::route_params_t params)
   {
     const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
     auto book = books_repository.get_book(id);
@@ -153,7 +146,7 @@ private:
     resp
         .append_header("Server", "RESTinio sample server /v.0.6")
         .append_header_date_field()
-        .append_header("Content-Type", "text/plain; charset=utf-8");
+        .append_header("Content-Type", "application/json");
 
     return resp;
   }

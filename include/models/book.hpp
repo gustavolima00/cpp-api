@@ -12,7 +12,7 @@ public:
   template <typename JSON_IO>
   void json_io(JSON_IO &io)
   {
-    io &json_dto::mandatory("author", author) & json_dto::mandatory("title", title);
+    io &json_dto::mandatory("author", author) & json_dto::mandatory("title", title) & json_dto::optional("id", id, 0);
   }
 
   std::string author;

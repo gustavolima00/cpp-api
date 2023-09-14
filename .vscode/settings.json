@@ -69,7 +69,20 @@
     "unordered_map": "cpp",
     "variant": "cpp",
     "vector": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "any": "cpp",
+    "bit": "cpp",
+    "codecvt": "cpp",
+    "condition_variable": "cpp",
+    "csignal": "cpp",
+    "coroutine": "cpp",
+    "future": "cpp",
+    "set": "cpp",
+    "typeindex": "cpp",
+    "functional": "cpp",
+    "iterator": "cpp",
+    "memory_resource": "cpp",
+    "*.ipp": "cpp"
   },
   "cSpell.words": [
     "restinio"
