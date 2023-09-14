@@ -22,44 +22,59 @@ public:
   explicit BaseRequestHandler() = default;
 
 protected:
-  template <typename RESP>
-  static RESP init_response(RESP resp, std::string content_type = "application/json")
+  template <typename ResponseBuilder>
+  static ResponseBuilder init_response(ResponseBuilder response, std::string content_type = "plain/text")
   {
-    resp
+    response
         .append_header("Server", "RESTinio sample server /v.0.6")
         .append_header_date_field()
         .append_header("Content-Type", content_type);
-
-    return resp;
+    return response;
   }
 
-  template <typename RESP>
-  static void set_response_status(RESP &resp, const ResponseStatus &status)
+  template <typename ResponseBuilder>
+  static void set_response_status(ResponseBuilder &response, const ResponseStatus &status)
   {
     switch (status)
     {
     case ResponseStatus::OK:
-      resp.header().status_line(restinio::status_ok());
+      response.header().status_line(restinio::status_ok());
       break;
     case ResponseStatus::NOT_FOUND:
-      resp.header().status_line(restinio::status_not_found());
+      response.header().status_line(restinio::status_not_found());
       break;
     case ResponseStatus::BAD_REQUEST:
-      resp.header().status_line(restinio::status_bad_request());
+      response.header().status_line(restinio::status_bad_request());
       break;
     case ResponseStatus::INTERNAL_SERVER_ERROR:
-      resp.header().status_line(restinio::status_internal_server_error());
+      response.header().status_line(restinio::status_internal_server_error());
       break;
     default:
-      resp.header().status_line(restinio::status_not_implemented());
+      response.header().status_line(restinio::status_not_implemented());
       break;
     }
   }
 
-  template <typename RESP, typename ResponseType>
-  static void set_response_body_as_json(RESP &resp, ResponseType &response_body)
+  template <typename ResponseBuilder, typename ResponseType>
+  static void set_response_body_as_json(ResponseBuilder &response, ResponseType &response_body)
   {
     std::string response_json = json_dto::to_json(response_body);
-    resp.set_body(response_json);
+    response.set_body(response_json);
+  }
+
+  template <typename ResponseBuilder, typename ResponseType>
+  static auto return_as_json(ResponseBuilder &response, ResponseType &response_body, const ResponseStatus &status = ResponseStatus::OK)
+  {
+    set_response_status(response, status);
+    set_response_body_as_json(response, response_body);
+    return response.done();
+  }
+
+  template <typename ResponseBuilder>
+  static auto return_internal_server_error(ResponseBuilder &response, const std::exception &exception)
+  {
+    set_response_status(response, ResponseStatus::INTERNAL_SERVER_ERROR);
+    response.set_body(exception.what());
+    return response.done();
   }
 };

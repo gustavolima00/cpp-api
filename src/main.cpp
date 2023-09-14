@@ -26,137 +26,106 @@ public:
   auto on_books_list(
       const restinio::request_handle_t &req, rr::route_params_t) const
   {
-    auto resp = init_resp(req->create_response());
-    auto books = books_repository.get_books();
-
-    set_response_status(resp, ResponseStatus::OK);
-    set_response_body_as_json(resp, books);
-
-    return resp.done();
+    try
+    {
+      auto books = books_repository.get_books();
+      auto response = init_response(req->create_response(), "application/json");
+      return return_as_json(response, books);
+    }
+    catch (const std::exception &ex)
+    {
+      auto response = init_response(req->create_response(), "plain/text");
+      return return_internal_server_error(response, ex);
+    }
   }
 
   auto on_book_get(const restinio::request_handle_t &req, rr::route_params_t params)
   {
-    const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-    auto book = books_repository.get_book(id);
-
-    auto resp = init_resp(req->create_response());
-
-    if (true)
+    try
     {
-      resp.set_body(
-          "Book #" + std::to_string(id) + " is: " +
-          book.title + " [" + book.author + "]\n");
-    }
-    else
-    {
-      resp.set_body(
-          "No book with #" + std::to_string(id) + "\n");
-    }
+      const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
+      auto book = books_repository.get_book(id);
 
-    return resp.done();
+      auto response = init_response(req->create_response(), "application/json");
+      return return_as_json(response, book);
+    }
+    catch (const std::exception &ex)
+    {
+      auto response = init_response(req->create_response(), "plain/text");
+      return return_internal_server_error(response, ex);
+    }
   }
 
   auto on_author_get(
       const restinio::request_handle_t &req, rr::route_params_t params)
   {
-    auto resp = init_resp(req->create_response());
     try
     {
       auto author = restinio::utils::unescape_percent_encoding(params["author"]);
       auto books = books_repository.get_by_author(author);
 
-      resp.set_body("Books of " + author + ":\n");
-
-      for (auto book : books)
-      {
-        resp.append_body(std::to_string(book.id) + ". ");
-        resp.append_body(book.title + "[" + book.author + "]\n");
-      }
+      auto response = init_response(req->create_response(), "application/json");
+      return return_as_json(response, books);
     }
-    catch (const std::exception &)
+    catch (const std::exception &ex)
     {
-      mark_as_bad_request(resp);
+      auto response = init_response(req->create_response(), "plain/text");
+      return return_internal_server_error(response, ex);
     }
-
-    return resp.done();
   }
 
   auto on_new_book(
       const restinio::request_handle_t &req, rr::route_params_t)
   {
-    auto resp = init_resp(req->create_response());
     try
     {
       Book new_book = json_dto::from_json<Book>(req->body());
       books_repository.add_book(new_book);
+      auto response = init_response(req->create_response(), "application/json");
+      return return_as_json(response, new_book);
     }
-    catch (const std::exception & /*ex*/)
+    catch (const std::exception &ex)
     {
-      mark_as_bad_request(resp);
+      auto response = init_response(req->create_response(), "plain/text");
+      return return_internal_server_error(response, ex);
     }
-
-    return resp.done();
   }
 
   auto on_book_update(
       const restinio::request_handle_t &req, rr::route_params_t params)
   {
-    const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-
-    auto resp = init_resp(req->create_response());
-
     try
     {
+      const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
       Book book = json_dto::from_json<Book>(req->body());
       books_repository.update_book(book);
+      auto response = init_response(req->create_response(), "application/json");
+      return return_as_json(response, book);
     }
-    catch (const std::exception & /*ex*/)
+    catch (const std::exception &ex)
     {
-      mark_as_bad_request(resp);
+      auto response = init_response(req->create_response(), "plain/text");
+      return return_internal_server_error(response, ex);
     }
-
-    return resp.done();
   }
 
   auto on_book_delete(
       const restinio::request_handle_t &req, rr::route_params_t params)
   {
-    const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-
-    auto resp = init_resp(req->create_response());
     try
     {
+      const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
       books_repository.delete_book(id);
     }
-    catch (const std::exception & /*ex*/)
+    catch (const std::exception &ex)
     {
-      mark_as_bad_request(resp);
+      auto response = init_response(req->create_response(), "plain/text");
+      return return_internal_server_error(response, ex);
     }
-    return resp.done();
   }
 
 private:
   BooksRepository books_repository;
-
-  template <typename RESP>
-  static RESP
-  init_resp(RESP resp)
-  {
-    resp
-        .append_header("Server", "RESTinio sample server /v.0.6")
-        .append_header_date_field()
-        .append_header("Content-Type", "application/json");
-
-    return resp;
-  }
-
-  template <typename RESP>
-  static void
-  mark_as_bad_request(RESP &resp)
-  {
-    resp.header().status_line(restinio::status_bad_request());
-  }
 };
 
 auto server_handler()
