@@ -19,7 +19,7 @@ public:
 
   book_collection_t get_books() const;
   Book get_book(std::uint32_t id) const;
-  void add_book(Book book);
+  void add_books(const book_collection_t &books);
   void update_book(const Book &book);
   void delete_book(std::uint32_t id);
   book_collection_t get_by_author(const std::string &author) const;
@@ -28,5 +28,4 @@ public:
 
 private:
   std::unordered_map<uint32_t, Book> books_map;
-  uint32_t next_id = 1;
 };

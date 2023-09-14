@@ -23,9 +23,10 @@ set(SOURCES "src/main.cpp" ${SOURCES})
 # Crie o executável
 add_executable(ApiProject ${SOURCES})
 
-# Incluir diretórios
-target_include_directories(ApiProject PUBLIC ${PROJECT_SOURCE_DIR}/include)
-
 # Link Conan libs
 target_link_libraries(ApiProject PRIVATE CONAN_PKG::restinio)
 target_link_libraries(ApiProject PRIVATE CONAN_PKG::json_dto)
+target_link_libraries(ApiProject PRIVATE CONAN_PKG::libpqxx)
+
+# Incluir diretórios
+target_include_directories(ApiProject PUBLIC ${PROJECT_SOURCE_DIR}/include)

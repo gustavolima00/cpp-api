@@ -65,7 +65,9 @@ restinio::request_handling_status_t BooksRequestsHandler::on_new_book(
   try
   {
     Book new_book = json_dto::from_json<Book>(req->body());
-    BooksRepository::getInstance().add_book(new_book);
+    std::vector<Book> books;
+    books.push_back(new_book);
+    BooksRepository::getInstance().add_books(books);
     auto response = init_response(req->create_response(), "application/json");
     return return_as_json(response, new_book);
   }
