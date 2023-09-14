@@ -1,11 +1,7 @@
 #include <iostream>
 
 #include <restinio/all.hpp>
-#include "repositories/books_repository.hpp"
-#include "requests/books_requests_handler.hpp"
 #include "requests/books_router.hpp"
-
-using book_collection_t = std::vector<Book>;
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;

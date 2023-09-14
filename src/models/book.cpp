@@ -1,6 +1,4 @@
-#include <json_dto/pub.hpp>
 #include "models/book.hpp"
-#include <string>
 
 Book::Book() = default;
 
