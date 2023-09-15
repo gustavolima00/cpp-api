@@ -72,6 +72,7 @@
     "span": "cpp",
     "stop_token": "cpp",
     "cinttypes": "cpp",
-    "expected": "cpp"
+    "expected": "cpp",
+    "*.ipp": "cpp"
   }
 }

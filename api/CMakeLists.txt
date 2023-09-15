@@ -13,12 +13,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wall -Wextra -Wpedantic -O2)
 
 # Adicione todos os arquivos .cpp na pasta src e src/models
-set(SOURCES "src/models/book.cpp" ${SOURCES})
+set(SOURCES "src/models/pessoa.cpp" ${SOURCES})
 set(SOURCES "src/database/database.cpp" ${SOURCES})
-set(SOURCES "src/repositories/books_repository.cpp" ${SOURCES})
+set(SOURCES "src/repositories/pessoas_repository.cpp" ${SOURCES})
 set(SOURCES "src/requests/base_request_handler.cpp" ${SOURCES})
-set(SOURCES "src/requests/books_requests_handler.cpp" ${SOURCES})
-set(SOURCES "src/requests/books_router.cpp" ${SOURCES})
+set(SOURCES "src/requests/pessoas_requests_handler.cpp" ${SOURCES})
+set(SOURCES "src/requests/pessoas_router.cpp" ${SOURCES})
 set(SOURCES "src/main.cpp" ${SOURCES})
 
 # Crie o executável
