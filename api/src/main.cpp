@@ -2,7 +2,6 @@
 
 #include <restinio/all.hpp>
 #include "requests/pessoas_router.hpp"
-#include "database/database.hpp"
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
@@ -21,7 +20,6 @@ int main()
 
   try
   {
-    database::connect();
     using traits_t =
         restinio::traits_t<
             restinio::asio_timer_manager_t,

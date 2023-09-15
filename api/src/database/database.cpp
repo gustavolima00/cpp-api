@@ -1,6 +1,15 @@
 #include "database/database.hpp"
 
-void database::connect()
+pqxx::connection database::connect()
 {
-    pqxx::connection c(CONNECTION_STRING);
+    pqxx::connection connection(CONNECTION_STRING);
+    return connection;
+}
+
+pqxx::result database::execute(pqxx::connection &connection, const std::string &sql)
+{
+    pqxx::work work(connection);
+    pqxx::result result = work.exec(sql);
+    work.commit();
+    return result;
 }

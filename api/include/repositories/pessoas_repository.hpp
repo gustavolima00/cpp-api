@@ -1,8 +1,8 @@
 #pragma once
 
 #include "models/pessoa.hpp"
+#include "database/database.hpp"
 #include <vector>
-#include <pqxx/pqxx>
 using namespace std;
 
 namespace pessoas_repository

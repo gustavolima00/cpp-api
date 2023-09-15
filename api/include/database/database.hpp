@@ -6,5 +6,7 @@
 
 namespace database
 {
-    void connect();
+    pqxx::connection connect();
+
+    pqxx::result execute(pqxx::connection &connection, const std::string &sql);
 }

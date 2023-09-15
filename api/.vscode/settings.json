@@ -73,6 +73,7 @@
     "stop_token": "cpp",
     "cinttypes": "cpp",
     "expected": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "pqxx": "cpp"
   }
 }
