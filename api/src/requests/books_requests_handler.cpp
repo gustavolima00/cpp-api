@@ -1,19 +1,13 @@
 #include "requests/books_requests_handler.hpp"
 
-BooksRequestsHandler::BooksRequestsHandler() = default;
+using namespace base_request_handler;
 
-BooksRequestsHandler &BooksRequestsHandler::getInstance()
-{
-  static BooksRequestsHandler instance;
-  return instance;
-}
-
-restinio::request_handling_status_t BooksRequestsHandler::on_books_list(
-    const restinio::request_handle_t &req, rr::route_params_t) const
+restinio::request_handling_status_t books_requests_handler::on_books_list(
+    const restinio::request_handle_t &req, rr::route_params_t)
 {
   try
   {
-    auto books = BooksRepository::getInstance().get_books();
+    auto books = books_repository::get_books();
     auto response = init_response(req->create_response(), "application/json");
     return return_as_json(response, books);
   }
@@ -24,12 +18,12 @@ restinio::request_handling_status_t BooksRequestsHandler::on_books_list(
   }
 }
 
-restinio::request_handling_status_t BooksRequestsHandler::on_book_get(const restinio::request_handle_t &req, rr::route_params_t params)
+restinio::request_handling_status_t books_requests_handler::on_book_get(const restinio::request_handle_t &req, rr::route_params_t params)
 {
   try
   {
     const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-    auto book = BooksRepository::getInstance().get_book(id);
+    auto book = books_repository::get_book(id);
 
     auto response = init_response(req->create_response(), "application/json");
     return return_as_json(response, book);
@@ -41,13 +35,13 @@ restinio::request_handling_status_t BooksRequestsHandler::on_book_get(const rest
   }
 }
 
-restinio::request_handling_status_t BooksRequestsHandler::on_author_get(
+restinio::request_handling_status_t books_requests_handler::on_author_get(
     const restinio::request_handle_t &req, rr::route_params_t params)
 {
   try
   {
     auto author = restinio::utils::unescape_percent_encoding(params["author"]);
-    auto books = BooksRepository::getInstance().get_by_author(author);
+    auto books = books_repository::get_by_author(author);
 
     auto response = init_response(req->create_response(), "application/json");
     return return_as_json(response, books);
@@ -59,7 +53,7 @@ restinio::request_handling_status_t BooksRequestsHandler::on_author_get(
   }
 }
 
-restinio::request_handling_status_t BooksRequestsHandler::on_new_book(
+restinio::request_handling_status_t books_requests_handler::on_new_book(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
   try
@@ -67,7 +61,7 @@ restinio::request_handling_status_t BooksRequestsHandler::on_new_book(
     Book new_book = json_dto::from_json<Book>(req->body());
     std::vector<Book> books;
     books.push_back(new_book);
-    BooksRepository::getInstance().add_books(books);
+    books_repository::add_books(books);
     auto response = init_response(req->create_response(), "application/json");
     return return_as_json(response, new_book);
   }
@@ -78,13 +72,13 @@ restinio::request_handling_status_t BooksRequestsHandler::on_new_book(
   }
 }
 
-restinio::request_handling_status_t BooksRequestsHandler::on_book_update(
+restinio::request_handling_status_t books_requests_handler::on_book_update(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
   try
   {
     Book book = json_dto::from_json<Book>(req->body());
-    BooksRepository::getInstance().update_book(book);
+    books_repository::update_book(book);
     auto response = init_response(req->create_response(), "application/json");
     return return_as_json(response, book);
   }
@@ -95,13 +89,13 @@ restinio::request_handling_status_t BooksRequestsHandler::on_book_update(
   }
 }
 
-restinio::request_handling_status_t BooksRequestsHandler::on_book_delete(
+restinio::request_handling_status_t books_requests_handler::on_book_delete(
     const restinio::request_handle_t &req, rr::route_params_t params)
 {
   try
   {
     const auto id = restinio::cast_to<std::uint32_t>(params["id"]);
-    BooksRepository::getInstance().delete_book(id);
+    books_repository::delete_book(id);
     auto response = init_response(req->create_response(), "text/plain");
     set_response_status(response, ResponseStatus::OK);
     return response.done();

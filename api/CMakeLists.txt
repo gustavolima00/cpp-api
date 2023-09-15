@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(ApiProject)
 
-# Integre Conan com CMake
+# Install packages
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
@@ -14,6 +14,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -O2)
 
 # Adicione todos os arquivos .cpp na pasta src e src/models
 set(SOURCES "src/models/book.cpp" ${SOURCES})
+set(SOURCES "src/database/database.cpp" ${SOURCES})
 set(SOURCES "src/repositories/books_repository.cpp" ${SOURCES})
 set(SOURCES "src/requests/base_request_handler.cpp" ${SOURCES})
 set(SOURCES "src/requests/books_requests_handler.cpp" ${SOURCES})

@@ -1,8 +1,6 @@
 #include "requests/base_request_handler.hpp"
 
-BaseRequestHandler::BaseRequestHandler() = default;
-
-response_builder_t BaseRequestHandler::init_response(
+response_builder_t base_request_handler::init_response(
     response_builder_t response,
     std::string content_type)
 {
@@ -13,7 +11,7 @@ response_builder_t BaseRequestHandler::init_response(
   return response;
 }
 
-void BaseRequestHandler::set_response_status(response_builder_t &response, const ResponseStatus &status)
+void base_request_handler::set_response_status(response_builder_t &response, const ResponseStatus &status)
 {
   switch (status)
   {
@@ -35,7 +33,7 @@ void BaseRequestHandler::set_response_status(response_builder_t &response, const
   }
 }
 
-restinio::request_handling_status_t BaseRequestHandler::return_internal_server_error(response_builder_t &response, const std::exception &exception)
+restinio::request_handling_status_t base_request_handler::return_internal_server_error(response_builder_t &response, const std::exception &exception)
 {
   set_response_status(response, ResponseStatus::INTERNAL_SERVER_ERROR);
   response.set_body(exception.what());

@@ -1,8 +1,7 @@
 #include "repositories/books_repository.hpp"
-#include <pqxx/pqxx>
 
-// const std::string CONNECTION_STRING = "postgresql://postgres:postgres@localhost:5432/gustavolima";
-const std::string CONNECTION_STRING = "postgresql://postgres:postgres@database:5432/postgres";
+const std::string CONNECTION_STRING = "postgresql://postgres:postgres@localhost:5432/postgres";
+// const std::string CONNECTION_STRING = "postgresql://postgres:postgres@database:5432/postgres";
 
 book_collection_t from_result_to_books(pqxx::result &r)
 {
@@ -18,13 +17,7 @@ book_collection_t from_result_to_books(pqxx::result &r)
   return books;
 }
 
-BooksRepository &BooksRepository::getInstance()
-{
-  static BooksRepository instance;
-  return instance;
-}
-
-book_collection_t BooksRepository::get_books() const
+book_collection_t books_repository::get_books()
 {
   pqxx::connection c(CONNECTION_STRING);
   pqxx::work w(c);
@@ -35,7 +28,7 @@ book_collection_t BooksRepository::get_books() const
   return books;
 }
 
-Book BooksRepository::get_book(std::uint32_t id) const
+Book books_repository::get_book(std::uint32_t id)
 {
   pqxx::connection c(CONNECTION_STRING);
   pqxx::work w(c);
@@ -45,7 +38,7 @@ Book BooksRepository::get_book(std::uint32_t id) const
   return books.at(0);
 }
 
-void BooksRepository::add_books(const book_collection_t &books)
+void books_repository::add_books(const book_collection_t &books)
 {
   try
   {
@@ -65,7 +58,7 @@ void BooksRepository::add_books(const book_collection_t &books)
   }
 }
 
-void BooksRepository::update_book(const Book &book)
+void books_repository::update_book(const Book &book)
 {
   pqxx::connection c(CONNECTION_STRING);
   pqxx::work w(c);
@@ -74,7 +67,7 @@ void BooksRepository::update_book(const Book &book)
   w.commit();
 }
 
-void BooksRepository::delete_book(std::uint32_t id)
+void books_repository::delete_book(std::uint32_t id)
 {
   pqxx::connection c(CONNECTION_STRING);
   pqxx::work w(c);
@@ -83,7 +76,7 @@ void BooksRepository::delete_book(std::uint32_t id)
   w.commit();
 }
 
-book_collection_t BooksRepository::get_by_author(const std::string &author) const
+book_collection_t books_repository::get_by_author(const std::string &author)
 {
   pqxx::connection c(CONNECTION_STRING);
   pqxx::work w(c);
@@ -92,5 +85,3 @@ book_collection_t BooksRepository::get_by_author(const std::string &author) cons
   w.commit();
   return books;
 }
-
-BooksRepository::BooksRepository() = default;

@@ -13,18 +13,10 @@ using book_collection_t = std::vector<Book>;
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
 
-class BooksRequestsHandler : BaseRequestHandler
+namespace books_requests_handler
 {
-public:
-    BooksRequestsHandler();
-
-    static BooksRequestsHandler &getInstance();
-
-    BooksRequestsHandler(const BooksRequestsHandler &) = delete;
-    BooksRequestsHandler(BooksRequestsHandler &&) = delete;
-
     restinio::request_handling_status_t on_books_list(
-        const restinio::request_handle_t &req, rr::route_params_t) const;
+        const restinio::request_handle_t &req, rr::route_params_t);
 
     restinio::request_handling_status_t on_book_get(const restinio::request_handle_t &req, rr::route_params_t params);
 
