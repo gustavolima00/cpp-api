@@ -5,7 +5,6 @@
 #include <cstdlib>
 
 #define DEFAULT_SERVER_PORT "8080"
-// #define PORT 80
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;

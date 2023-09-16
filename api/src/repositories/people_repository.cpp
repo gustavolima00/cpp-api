@@ -56,7 +56,7 @@ Pearson people_repository::get_pearson(string &id)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT name, nickname, birth_date, stack FROM people WHERE id = $1",
+      "SELECT name, nickname, birth_date, stack FROM people WHERE id = $1 LIMIT 1",
       id);
 
   if (result.empty())
@@ -86,7 +86,7 @@ vector<Pearson> people_repository::search_people(string &term)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT id, name, nickname, birth_date, stack FROM people WHERE name ILIKE $1 OR nickname ILIKE $1",
+      "SELECT id, name, nickname, birth_date, stack FROM people WHERE name ILIKE $1 OR nickname ILIKE $1 LIMIT 50",
       "%" + term + "%");
 
   vector<Pearson> people;

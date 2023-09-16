@@ -24,9 +24,8 @@ RUN rm -rf build && \
   mkdir build && \
   cd build && \
   conan install .. --build=missing && \
-  cmake .. 
-
-RUN cd build && make
+  cmake .. && \
+  make
 
 # Comando para executar o projeto
 CMD ["./build/bin/ApiProject"]
