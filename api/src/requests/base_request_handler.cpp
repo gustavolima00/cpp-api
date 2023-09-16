@@ -2,7 +2,7 @@
 
 response_builder_t base_request_handler::init_response(
     response_builder_t response,
-    std::string content_type)
+    string content_type)
 {
   response
       .append_header("Server", "RESTinio sample server /v.0.6")
@@ -33,30 +33,30 @@ void base_request_handler::set_response_status(response_builder_t &response, con
   }
 }
 
-restinio::request_handling_status_t base_request_handler::return_internal_server_error(response_builder_t &response, const std::exception &exception)
+restinio::request_handling_status_t base_request_handler::return_internal_server_error(response_builder_t &response, const exception &exception)
 {
   set_response_status(response, ResponseStatus::INTERNAL_SERVER_ERROR);
   response.set_body(exception.what());
   return response.done();
 }
 
-std::string base_request_handler::url_decode(const std::string &str)
+string base_request_handler::url_decode(const string &str)
 {
-  std::ostringstream unescaped;
-  for (std::size_t i = 0; i < str.size(); ++i)
+  ostringstream unescaped;
+  for (size_t i = 0; i < str.size(); ++i)
   {
     if (str[i] == '%' && i + 2 < str.size())
     {
       int value;
-      std::istringstream is(str.substr(i + 1, 2));
-      if (is >> std::hex >> value)
+      istringstream is(str.substr(i + 1, 2));
+      if (is >> hex >> value)
       {
         unescaped << static_cast<char>(value);
         i += 2;
       }
       else
       {
-        return ""; // ou lançar uma exceção
+        return "";
       }
     }
     else if (str[i] == '+')

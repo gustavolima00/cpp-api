@@ -25,10 +25,10 @@ void people_repository::create_pearson(const Pearson &pearson)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "INSERT INTO people (nome, apelido, nascimento, stack) VALUES ($1, $2, $3, $4) RETURNING id",
-      pearson.nome,
-      pearson.apelido,
-      pearson.nascimento,
+      "INSERT INTO people (name, nickname, birth_date, stack) VALUES ($1, $2, $3, $4) RETURNING id",
+      pearson.name,
+      pearson.nickname,
+      pearson.birth_date,
       pearson.stack);
 
   txn.commit();
@@ -40,7 +40,7 @@ Pearson people_repository::get_pearson(string &id)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT nome, apelido, nascimento, stack FROM people WHERE id = $1",
+      "SELECT name, nickname, birth_date, stack FROM people WHERE id = $1",
       id);
 
   if (result.empty())
@@ -49,19 +49,19 @@ Pearson people_repository::get_pearson(string &id)
   }
   auto row = result[0];
 
-  string nome = row[0].as<string>();
-  string apelido = row[1].as<string>();
-  string nascimento = row[2].as<string>();
+  string name = row[0].as<string>();
+  string nickname = row[1].as<string>();
+  string birth_date = row[2].as<string>();
   string raw_stack = row[3].as<string>();
   vector<string> stack = parse_pg_array(raw_stack);
 
   cout << "id: " << id << endl;
-  cout << "nome: " << nome << endl;
-  cout << "apelido: " << apelido << endl;
-  cout << "nascimento: " << nascimento << endl;
+  cout << "nome: " << name << endl;
+  cout << "apelido: " << nickname << endl;
+  cout << "nascimento: " << birth_date << endl;
   cout << "raw_stack: " << raw_stack << endl;
 
-  return Pearson(id, nome, apelido, nascimento, stack);
+  return Pearson(id, name, nickname, birth_date, stack);
 }
 
 vector<Pearson> people_repository::search_people(string &term)
@@ -70,20 +70,20 @@ vector<Pearson> people_repository::search_people(string &term)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT id, nome, apelido, nascimento, stack FROM people WHERE nome ILIKE $1 OR apelido ILIKE $1",
+      "SELECT id, name, nickname, birth_date, stack FROM people WHERE name ILIKE $1 OR nickname ILIKE $1",
       "%" + term + "%");
 
   vector<Pearson> people;
   for (auto row : result)
   {
     string id = row[0].as<string>();
-    string nome = row[1].as<string>();
-    string apelido = row[2].as<string>();
-    string nascimento = row[3].as<string>();
+    string name = row[1].as<string>();
+    string nickname = row[2].as<string>();
+    string birth_date = row[3].as<string>();
     string raw_stack = row[4].as<string>();
     vector<string> stack = parse_pg_array(raw_stack);
 
-    people.push_back(Pearson(id, nome, apelido, nascimento, stack));
+    people.push_back(Pearson(id, name, nickname, birth_date, stack));
   }
 
   return people;

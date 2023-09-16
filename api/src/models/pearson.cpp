@@ -2,11 +2,11 @@
 
 Pearson::Pearson() = default;
 
-Pearson::Pearson(const string &id, const string &nome, const string &apelido, const string &nascimento, vector<string> stack)
+Pearson::Pearson(const string &id, const string &name, const string &nickname, const string &birth_date, vector<string> &stack)
 {
     this->id = id;
-    this->nome = nome;
-    this->apelido = apelido;
-    this->nascimento = nascimento;
+    this->name = name;
+    this->nickname = nickname;
+    this->birth_date = birth_date;
     this->stack = stack;
 }

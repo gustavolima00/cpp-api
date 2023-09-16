@@ -38,10 +38,10 @@ restinio::request_handling_status_t people_requests_handler::on_get_pearson(
   }
 }
 
-string get_term_string(string &query)
+string get_term_string(const restinio::string_view_t query)
 {
   string term;
-  int i = 0;
+  size_t i = 0;
   while (i < query.size() && query[i] != 't')
   {
     i++;
@@ -59,7 +59,7 @@ restinio::request_handling_status_t people_requests_handler::on_search_people(co
 {
   try
   {
-    const auto t_query = req->header().query();
+    const restinio::string_view_t t_query = req->header().query();
     string term = get_term_string(t_query);
     cout << "t_query: " << t_query << endl;
     cout << "term: " << term << endl;
