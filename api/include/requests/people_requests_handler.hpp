@@ -22,4 +22,11 @@ namespace people_requests_handler
     restinio::request_handling_status_t on_search_people(const restinio::request_handle_t &req, rr::route_params_t params);
 
     restinio::request_handling_status_t on_count_people(const restinio::request_handle_t &req, rr::route_params_t params);
+
+    class MissingQueryParamException : public std::exception
+    {
+    public:
+        MissingQueryParamException();
+        const char *what();
+    };
 };

@@ -40,8 +40,7 @@ int main()
             .port(std::atoi(server_port))
             .request_handler(server_handler())
             .read_next_http_message_timelimit(10s)
-            .write_http_response_timelimit(1s)
-            .handle_request_timeout(1s));
+            .write_http_response_timelimit(1s));
   }
   catch (const std::exception &ex)
   {

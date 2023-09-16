@@ -37,12 +37,19 @@ string people_repository::create_pearson(const Pearson &pearson)
     stack = *pearson.stack;
   }
 
+  string stack_as_string;
+  for (auto &item : stack)
+  {
+    stack_as_string += item + ",";
+  }
+
   pqxx::result result = txn.exec_params(
-      "INSERT INTO people (name, nickname, birth_date, stack) VALUES ($1, $2, $3, $4) RETURNING id",
+      "INSERT INTO people (name, nickname, birth_date, stack, stack_as_string) VALUES ($1, $2, $3, $4, $5) RETURNING id",
       pearson.name,
       pearson.nickname,
       pearson.birth_date,
-      stack);
+      stack,
+      stack_as_string);
   txn.commit();
 
   auto row = result[0];
@@ -86,8 +93,7 @@ vector<Pearson> people_repository::search_people(string &term)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT id, name, nickname, birth_date, stack FROM people WHERE name ILIKE $1 OR nickname ILIKE $1 LIMIT 50",
-      "%" + term + "%");
+      "SELECT id, name, nickname, birth_date, stack FROM people WHERE name % $1 OR nickname % $1 OR stack_as_string % $1 LIMIT 50", term);
 
   vector<Pearson> people;
   for (auto row : result)

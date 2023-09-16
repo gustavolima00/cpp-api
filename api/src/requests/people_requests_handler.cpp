@@ -2,6 +2,13 @@
 
 using namespace base_request_handler;
 
+people_requests_handler::MissingQueryParamException::MissingQueryParamException() {}
+
+const char *people_requests_handler::MissingQueryParamException::what()
+{
+  return "Missing query param";
+}
+
 restinio::request_handling_status_t people_requests_handler::on_create_pearson(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
@@ -53,9 +60,15 @@ string get_term_string(const restinio::string_view_t query)
 {
   string term;
   size_t i = 0;
+  bool has_term = false;
   while (i < query.size() && query[i] != 't')
   {
+    has_term = true;
     i++;
+  }
+  if (!has_term)
+  {
+    throw people_requests_handler::MissingQueryParamException();
   }
   i += 2; // t=
   while (i < query.size() && query[i] != '&')
@@ -78,6 +91,11 @@ restinio::request_handling_status_t people_requests_handler::on_search_people(co
     string response_json = json_dto::to_json(people);
     response.set_body(response_json);
     return response.append_header("Content-Type", "application/json").done();
+  }
+  catch (const people_requests_handler::MissingQueryParamException &ex)
+  {
+    response.header().status_line(restinio::status_bad_request());
+    return response.done();
   }
   catch (const std::exception &ex)
   {
