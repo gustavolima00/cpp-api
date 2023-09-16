@@ -1,7 +1,7 @@
-CREATE TABLE pessoa (
+CREATE TABLE people(
     id uuid default gen_random_uuid() primary key,
-    apelido varchar(33) not null,
-    nome varchar(101) not null,
-    nascimento varchar(11) not null,
+    nickname varchar(33) not null,
+    name varchar(101) not null,
+    birth_date varchar(11) not null,
     stack varchar(33)[],
 );

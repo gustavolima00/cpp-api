@@ -37,4 +37,5 @@ namespace base_request_handler
     return response.done();
   }
   restinio::request_handling_status_t return_internal_server_error(response_builder_t &response, const std::exception &exception);
+  std::string base_request_handler::url_decode(const std::string &str);
 };

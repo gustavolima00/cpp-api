@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <restinio/all.hpp>
-#include "requests/pessoas_router.hpp"
+#include "requests/people_router.hpp"
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;
@@ -9,7 +9,7 @@ using router_t = rr::express_router_t<>;
 auto server_handler()
 {
   auto router = std::make_unique<router_t>();
-  pessoas_router::register_routes(router);
+  people_router::register_routes(router);
 
   return router;
 }

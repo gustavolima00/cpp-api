@@ -39,3 +39,34 @@ restinio::request_handling_status_t base_request_handler::return_internal_server
   response.set_body(exception.what());
   return response.done();
 }
+
+std::string base_request_handler::url_decode(const std::string &str)
+{
+  std::ostringstream unescaped;
+  for (std::size_t i = 0; i < str.size(); ++i)
+  {
+    if (str[i] == '%' && i + 2 < str.size())
+    {
+      int value;
+      std::istringstream is(str.substr(i + 1, 2));
+      if (is >> std::hex >> value)
+      {
+        unescaped << static_cast<char>(value);
+        i += 2;
+      }
+      else
+      {
+        return ""; // ou lançar uma exceção
+      }
+    }
+    else if (str[i] == '+')
+    {
+      unescaped << ' ';
+    }
+    else
+    {
+      unescaped << str[i];
+    }
+  }
+  return unescaped.str();
+}

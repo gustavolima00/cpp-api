@@ -1,16 +1,16 @@
-#include "requests/pessoas_requests_handler.hpp"
+#include "requests/people_requests_handler.hpp"
 
 using namespace base_request_handler;
 
-restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_create(
+restinio::request_handling_status_t people_requests_handler::on_create_pearson(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
   try
   {
-    Pessoa pessoa = json_dto::from_json<Pessoa>(req->body());
-    pessoas_repository::create_pessoa(pessoa);
+    Pearson pearson = json_dto::from_json<Pearson>(req->body());
+    people_repository::create_pearson(pearson);
     auto response = init_response(req->create_response(), "application/json");
-    return return_as_json(response, pessoa);
+    return return_as_json(response, pearson);
   }
   catch (const std::exception &ex)
   {
@@ -19,7 +19,7 @@ restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_create(
   }
 }
 
-restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_get(
+restinio::request_handling_status_t people_requests_handler::on_get_pearson(
     const restinio::request_handle_t &req, rr::route_params_t params)
 {
   try
@@ -27,9 +27,9 @@ restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_get(
     // From route :id
     auto id = restinio::cast_to<std::string>(params["id"]);
     cout << "id: " << id << endl;
-    auto pessoa = pessoas_repository::get_pessoa(id);
+    auto pearson = people_repository::get_pearson(id);
     auto response = init_response(req->create_response(), "application/json");
-    return return_as_json(response, pessoa);
+    return return_as_json(response, pearson);
   }
   catch (const std::exception &ex)
   {
@@ -38,18 +38,35 @@ restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_get(
   }
 }
 
-restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_search(const restinio::request_handle_t &req, rr::route_params_t)
+string get_term_string(string &query)
+{
+  string term;
+  int i = 0;
+  while (i < query.size() && query[i] != 't')
+  {
+    i++;
+  }
+  i += 2; // t=
+  while (i < query.size() && query[i] != '&')
+  {
+    term += query[i];
+    i++;
+  }
+  return url_decode(term);
+}
+
+restinio::request_handling_status_t people_requests_handler::on_search_people(const restinio::request_handle_t &req, rr::route_params_t)
 {
   try
   {
     const auto t_query = req->header().query();
-
+    string term = get_term_string(t_query);
     cout << "t_query: " << t_query << endl;
-    string term = "";
-    auto pessoas = pessoas_repository::search_pessoa(term);
+    cout << "term: " << term << endl;
+    auto people = people_repository::search_people(term);
 
     auto response = init_response(req->create_response(), "application/json");
-    return return_as_json(response, pessoas);
+    return return_as_json(response, people);
   }
   catch (const std::exception &ex)
   {
@@ -58,12 +75,12 @@ restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_search(c
   }
 }
 
-restinio::request_handling_status_t pessoas_requests_handler::on_pessoa_count(
+restinio::request_handling_status_t people_requests_handler::on_count_people(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
   try
   {
-    auto count = pessoas_repository::count_pessoa();
+    auto count = people_repository::count_people();
     auto response = init_response(req->create_response(), "plain/text");
     response.set_body(std::to_string(count));
     return response.done();
