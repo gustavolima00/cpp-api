@@ -1,13 +1,46 @@
-version: '3'
+version: "3"
 services:
-  api:
+  api1:
     build: ./api
-    ports:
-      - "8080:8080"
+    hostname: api1
     depends_on:
-      - database
+      - db
+    expose:
+      - "80"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "0.5GB"
+  api2:
+    build: ./api
+    hostname: api2
+    depends_on:
+      - db
+    expose:
+      - "80"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "0.5GB"
 
-  database:
+  nginx: # Load Balancer
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api1
+      - api2
+    ports:
+      - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "0.5GB"
+
+  db:
     image: "postgres:latest"
     environment:
       POSTGRES_DB: postgres

@@ -94,5 +94,6 @@
     "cinttypes": "cpp",
     "expected": "cpp"
   },
-  "cmake.sourceDirectory": "/home/gustavo/Documentos/cpp-api/api"
+  "cmake.sourceDirectory": "/home/gustavo/Documentos/cpp-api/api",
+  "C_Cpp.errorSquiggles": "disabled"
 }
