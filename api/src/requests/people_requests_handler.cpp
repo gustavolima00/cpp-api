@@ -44,7 +44,6 @@ restinio::request_handling_status_t people_requests_handler::on_get_pearson(
   }
   catch (const std::exception &ex)
   {
-    cout << "Error: " << ex.what() << endl;
     response.header().status_line(restinio::status_internal_server_error());
     return response.done();
   }
@@ -69,37 +68,37 @@ string get_term_string(const restinio::string_view_t query)
 
 restinio::request_handling_status_t people_requests_handler::on_search_people(const restinio::request_handle_t &req, rr::route_params_t)
 {
+  auto response = req->create_response();
   try
   {
     const restinio::string_view_t t_query = req->header().query();
     string term = get_term_string(t_query);
-    cout << "t_query: " << t_query << endl;
-    cout << "term: " << term << endl;
     auto people = people_repository::search_people(term);
 
-    auto response = init_response(req->create_response(), "application/json");
-    return return_as_json(response, people);
+    string response_json = json_dto::to_json(people);
+    response.set_body(response_json);
+    return response.append_header("Content-Type", "application/json").done();
   }
   catch (const std::exception &ex)
   {
-    auto response = init_response(req->create_response(), "plain/text");
-    return return_internal_server_error(response, ex);
+    response.header().status_line(restinio::status_internal_server_error());
+    return response.done();
   }
 }
 
 restinio::request_handling_status_t people_requests_handler::on_count_people(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
+  auto response = req->create_response();
   try
   {
     auto count = people_repository::count_people();
-    auto response = init_response(req->create_response(), "plain/text");
     response.set_body(std::to_string(count));
-    return response.done();
+    return response.append_header("Content-Type", "text/plain").done();
   }
   catch (const std::exception &ex)
   {
-    auto response = init_response(req->create_response(), "plain/text");
-    return return_internal_server_error(response, ex);
+    response.header().status_line(restinio::status_internal_server_error());
+    return response.done();
   }
 }

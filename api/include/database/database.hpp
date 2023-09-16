@@ -1,8 +1,8 @@
 #pragma once
 #include <pqxx/pqxx>
-
-// #define CONNECTION_STRING "postgresql://postgres:postgres@db:5432/postgres"
-#define CONNECTION_STRING "postgresql://postgres:postgres@localhost:5432/postgres"
+#include <cstdlib>
+#include <iostream>
+#define DEFAULT_CONNECTION_STRING "postgresql://postgres:postgres@localhost:5432/postgres"
 
 namespace database
 {

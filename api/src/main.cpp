@@ -2,7 +2,9 @@
 
 #include <restinio/all.hpp>
 #include "requests/people_router.hpp"
-#define PORT 8080
+#include <cstdlib>
+
+#define DEFAULT_SERVER_PORT "8080"
 // #define PORT 80
 
 namespace rr = restinio::router;
@@ -19,6 +21,11 @@ auto server_handler()
 int main()
 {
   using namespace std::chrono;
+  const char *server_port = std::getenv("SERVER_PORT");
+  if (server_port == nullptr)
+  {
+    server_port = DEFAULT_SERVER_PORT;
+  }
 
   try
   {
@@ -31,7 +38,7 @@ int main()
     restinio::run(
         restinio::on_this_thread<traits_t>()
             .address("0.0.0.0")
-            .port(PORT)
+            .port(std::atoi(server_port))
             .request_handler(server_handler())
             .read_next_http_message_timelimit(10s)
             .write_http_response_timelimit(1s)
