@@ -19,6 +19,13 @@ std::vector<std::string> parse_pg_array(const std::string &pg_array)
   return result;
 }
 
+people_repository::PearsonNotFound::PearsonNotFound() {}
+
+const char *people_repository::PearsonNotFound::what()
+{
+  return "Pearson não encontrada";
+}
+
 string people_repository::create_pearson(const Pearson &pearson)
 {
   auto connection = database::connect();
@@ -54,7 +61,7 @@ Pearson people_repository::get_pearson(string &id)
 
   if (result.empty())
   {
-    throw std::runtime_error("Pearson não encontrada");
+    throw PearsonNotFound();
   }
   auto row = result[0];
 

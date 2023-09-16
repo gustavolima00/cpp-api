@@ -16,7 +16,6 @@ restinio::request_handling_status_t people_requests_handler::on_create_pearson(
   }
   catch (const std::exception &ex)
   {
-    cout << "Error: " << ex.what() << endl;
     response.header().status_line(restinio::status_unprocessable_entity());
     return response.done();
   }
@@ -25,19 +24,29 @@ restinio::request_handling_status_t people_requests_handler::on_create_pearson(
 restinio::request_handling_status_t people_requests_handler::on_get_pearson(
     const restinio::request_handle_t &req, rr::route_params_t params)
 {
+  auto response = req->create_response();
   try
   {
     // From route :id
     auto id = restinio::cast_to<std::string>(params["id"]);
-    cout << "id: " << id << endl;
     auto pearson = people_repository::get_pearson(id);
-    auto response = init_response(req->create_response(), "application/json");
-    return return_as_json(response, pearson);
+
+    response.header().status_line(restinio::status_ok());
+
+    string response_json = json_dto::to_json(pearson);
+    response.set_body(response_json);
+    return response.append_header("Content-Type", "application/json").done();
+  }
+  catch (const people_repository::PearsonNotFound &ex)
+  {
+    response.header().status_line(restinio::status_not_found());
+    return response.done();
   }
   catch (const std::exception &ex)
   {
-    auto response = init_response(req->create_response(), "plain/text");
-    return return_internal_server_error(response, ex);
+    cout << "Error: " << ex.what() << endl;
+    response.header().status_line(restinio::status_internal_server_error());
+    return response.done();
   }
 }
 

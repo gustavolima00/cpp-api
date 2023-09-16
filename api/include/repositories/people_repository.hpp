@@ -11,4 +11,11 @@ namespace people_repository
   Pearson get_pearson(string &id);
   vector<Pearson> search_people(string &term);
   int count_people();
+
+  class PearsonNotFound : public std::exception
+  {
+  public:
+    PearsonNotFound();
+     const char* what();
+  };
 };
