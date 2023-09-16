@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ativar todos os warnings para o seu projeto
-add_compile_options(-Wall -Wextra -Wpedantic)
+add_compile_options(-Wall -Wextra -Wpedantic -O2) 
 
 # Adicione todos os arquivos .cpp na pasta src e src/models
 set(SOURCES "src/models/pearson.cpp" ${SOURCES})
