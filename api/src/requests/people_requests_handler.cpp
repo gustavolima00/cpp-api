@@ -60,16 +60,13 @@ string get_term_string(const restinio::string_view_t query)
 {
   string term;
   size_t i = 0;
-  bool has_term = false;
   while (i < query.size() && query[i] != 't')
   {
-    has_term = true;
     i++;
   }
-  if (!has_term)
-  {
+  if (i == query.size())
     throw people_requests_handler::MissingQueryParamException();
-  }
+
   i += 2; // t=
   while (i < query.size() && query[i] != '&')
   {
