@@ -19,19 +19,28 @@ std::vector<std::string> parse_pg_array(const std::string &pg_array)
   return result;
 }
 
-void people_repository::create_pearson(const Pearson &pearson)
+string people_repository::create_pearson(const Pearson &pearson)
 {
   auto connection = database::connect();
   pqxx::work txn(connection);
+
+  vector<string> stack{};
+  if (pearson.stack.has_value())
+  {
+    stack = *pearson.stack;
+  }
 
   pqxx::result result = txn.exec_params(
       "INSERT INTO people (name, nickname, birth_date, stack) VALUES ($1, $2, $3, $4) RETURNING id",
       pearson.name,
       pearson.nickname,
       pearson.birth_date,
-      pearson.stack);
-
+      stack);
   txn.commit();
+
+  auto row = result[0];
+  string id = row[0].as<string>();
+  return id;
 }
 
 Pearson people_repository::get_pearson(string &id)

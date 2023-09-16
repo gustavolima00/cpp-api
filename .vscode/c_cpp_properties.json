@@ -1,18 +1,19 @@
 {
-  "configurations": [
-    {
-      "name": "Linux",
-      "defines": [],
-      "compilerPath": "/usr/bin/g++",
-      "cStandard": "c17",
-      "cppStandard": "c++14",
-      "includePath": [
-        "${workspaceFolder}/**",
-        "${workspaceFolder}/api/include/**",
-        "~/.conan/data/**",
-        "~/.conan/data/restinio/0.6.13/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/**"
-      ]
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Linux",
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/api/include/**",
+                "~/.conan/data/**",
+                "~/.conan/data/restinio/0.6.13/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/**"
+            ],
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
 }

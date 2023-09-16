@@ -5,17 +5,20 @@ using namespace base_request_handler;
 restinio::request_handling_status_t people_requests_handler::on_create_pearson(
     const restinio::request_handle_t &req, rr::route_params_t)
 {
+  auto response = req->create_response();
+
   try
   {
     Pearson pearson = json_dto::from_json<Pearson>(req->body());
-    people_repository::create_pearson(pearson);
-    auto response = init_response(req->create_response(), "application/json");
-    return return_as_json(response, pearson);
+    string id = people_repository::create_pearson(pearson);
+    response.header().status_line(restinio::status_created());
+    return response.append_header("Location", "/pessoas/" + id).done();
   }
   catch (const std::exception &ex)
   {
-    auto response = init_response(req->create_response(), "plain/text");
-    return return_internal_server_error(response, ex);
+    cout << "Error: " << ex.what() << endl;
+    response.header().status_line(restinio::status_unprocessable_entity());
+    return response.done();
   }
 }
 

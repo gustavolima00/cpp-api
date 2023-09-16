@@ -5,3 +5,5 @@ CREATE TABLE people(
     birth_date varchar(11) not null,
     stack varchar(33)[]
 );
+
+CREATE UNIQUE INDEX people_name_uindex ON people (nickname) USING(hash);

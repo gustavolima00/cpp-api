@@ -2,8 +2,8 @@
 
 #include <restinio/all.hpp>
 #include "requests/people_router.hpp"
-// #define PORT 8080
-#define PORT 80
+#define PORT 8080
+// #define PORT 80
 
 namespace rr = restinio::router;
 using router_t = rr::express_router_t<>;

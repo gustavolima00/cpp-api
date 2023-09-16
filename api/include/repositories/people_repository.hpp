@@ -7,7 +7,7 @@ using namespace std;
 
 namespace people_repository
 {
-  void create_pearson(const Pearson &pearson);
+  string create_pearson(const Pearson &pearson);
   Pearson get_pearson(string &id);
   vector<Pearson> search_people(string &term);
   int count_people();
