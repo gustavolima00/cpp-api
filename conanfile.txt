@@ -2,6 +2,7 @@
 restinio/0.6.13
 json_dto/0.2.14
 libpqxx/7.8.1
+hiredis/1.2.0
 
 [generators]
 cmake

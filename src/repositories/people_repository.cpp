@@ -47,7 +47,7 @@ const char *people_repository::PearsonNotFound::what()
 
 string people_repository::create_pearson(const Pearson &pearson)
 {
-  auto connection = database::connect();
+  auto connection = database_client::connect();
   pqxx::work txn(connection);
 
   string stack_as_string;
@@ -71,7 +71,7 @@ string people_repository::create_pearson(const Pearson &pearson)
 
 Pearson people_repository::get_pearson(string &id)
 {
-  auto connection = database::connect();
+  auto connection = database_client::connect();
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
@@ -95,7 +95,7 @@ Pearson people_repository::get_pearson(string &id)
 
 vector<Pearson> people_repository::search_people(string &term)
 {
-  auto connection = database::connect();
+  auto connection = database_client::connect();
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
@@ -120,7 +120,7 @@ vector<Pearson> people_repository::search_people(string &term)
 
 int people_repository::count_people()
 {
-  auto connection = database::connect();
+  auto connection = database_client::connect();
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec("SELECT COUNT(*) FROM people");

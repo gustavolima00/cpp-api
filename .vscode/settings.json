@@ -96,6 +96,6 @@
     "set": "cpp",
     "filesystem": "cpp"
   },
-  "cmake.sourceDirectory": ".",
+  "cmake.sourceDirectory": "/Users/gustavolima/my_c_plus_plus_api",
   "C_Cpp.errorSquiggles": "disabled"
 }

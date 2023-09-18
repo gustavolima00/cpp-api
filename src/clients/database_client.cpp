@@ -1,6 +1,6 @@
-#include "database/database.hpp"
+#include "clients/database_client.hpp"
 
-pqxx::connection database::connect()
+pqxx::connection database_client::connect()
 {
     const char *connection_string = std::getenv("DATABASE_CONNECTION_STRING");
     if (connection_string == nullptr)

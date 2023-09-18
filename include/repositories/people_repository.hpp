@@ -1,7 +1,7 @@
 #pragma once
 
 #include "models/pearson.hpp"
-#include "database/database.hpp"
+#include "clients/database_client.hpp"
 #include <vector>
 using namespace std;
 
