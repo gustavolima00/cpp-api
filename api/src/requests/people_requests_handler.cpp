@@ -51,6 +51,7 @@ restinio::request_handling_status_t people_requests_handler::on_get_pearson(
   }
   catch (const std::exception &ex)
   {
+    cout << "Error: " << ex.what() << endl;
     response.header().status_line(restinio::status_internal_server_error());
     return response.done();
   }
@@ -96,6 +97,7 @@ restinio::request_handling_status_t people_requests_handler::on_search_people(co
   }
   catch (const std::exception &ex)
   {
+    cout << "Error: " << ex.what() << endl;
     response.header().status_line(restinio::status_internal_server_error());
     return response.done();
   }
@@ -113,6 +115,7 @@ restinio::request_handling_status_t people_requests_handler::on_count_people(
   }
   catch (const std::exception &ex)
   {
+    cout << "Error: " << ex.what() << endl;
     response.header().status_line(restinio::status_internal_server_error());
     return response.done();
   }
