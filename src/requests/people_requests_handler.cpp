@@ -4,7 +4,7 @@ using namespace base_request_handler;
 
 people_requests_handler::MissingQueryParamException::MissingQueryParamException() {}
 
-const char *people_requests_handler::MissingQueryParamException::what() const _NOEXCEPT
+const char *people_requests_handler::MissingQueryParamException::what()
 {
   return "Missing query param";
 }

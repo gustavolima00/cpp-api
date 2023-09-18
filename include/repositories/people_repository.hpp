@@ -16,6 +16,6 @@ namespace people_repository
   {
   public:
     PearsonNotFound();
-    const char *what() const _NOEXCEPT;
+    const char *what();
   };
 };
