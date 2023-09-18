@@ -8,7 +8,7 @@
             "cppStandard": "c++14",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/api/include/**",
+                "${workspaceFolder}/include/**",
                 "~/.conan/data/**",
                 "~/.conan/data/restinio/0.6.13/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/**"
             ],

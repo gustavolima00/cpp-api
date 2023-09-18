@@ -1,7 +1,7 @@
 version: "3"
 services:
   api1:
-    build: ./api
+    build: .
     hostname: api1
     depends_on:
       - db
@@ -16,7 +16,7 @@ services:
           cpus: "0.25"
           memory: "0.5GB"
   api2:
-    build: ./api
+    build: .
     hostname: api2
     depends_on:
       - db
@@ -53,4 +53,4 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database_init.sql:/docker-entrypoint-initdb.d/init.sql
