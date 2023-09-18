@@ -26,17 +26,6 @@ int main()
     server_port = DEFAULT_SERVER_PORT;
   }
 
-  // Conectar ao servidor Redis
-  redisContext *context = redis_client::connect();
-
-  redis_client::set_key(context, "chave", "valor");
-
-  string result = redis_client::get_key(context, "chave");
-  cout << "Valor da chave: " << result << endl;
-  redis_client::disconnect(context);
-
-  return 0;
-
   try
   {
     using traits_t =

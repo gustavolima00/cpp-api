@@ -61,3 +61,15 @@ void redis_client::disconnect(redisContext *context)
 {
   redisFree(context);
 }
+
+int redis_client::get_queue_size(redisContext *context, const char *queue_name)
+{
+  redisReply *reply = (redisReply *)redisCommand(context, "LLEN %s", queue_name);
+  if (reply->type != REDIS_REPLY_INTEGER)
+  {
+    throw RedisClientException("Erro ao executar o comando LLEN");
+  }
+  int size = reply->integer;
+  freeReplyObject(reply);
+  return size;
+}
