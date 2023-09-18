@@ -3,7 +3,7 @@
 #include <restinio/all.hpp>
 #include "requests/people_router.hpp"
 #include <cstdlib>
-#include <hiredis/hiredis.h>
+#include "clients/redis_client.hpp"
 
 #define DEFAULT_SERVER_PORT "8080"
 
@@ -26,43 +26,14 @@ int main()
     server_port = DEFAULT_SERVER_PORT;
   }
 
-  // Conectar ao servidor Redis rodando na porta 6379 do localhost
-  redisContext *context = redisConnect("127.0.0.1", 6379);
-  if (context == NULL || context->err)
-  {
-    if (context)
-    {
-      std::cout << "Erro: " << context->errstr << std::endl;
-      // Libera o contexto
-      redisFree(context);
-    }
-    else
-    {
-      std::cout << "Não foi possível alocar o contexto do redis" << std::endl;
-    }
-    return 1;
-  }
+  // Conectar ao servidor Redis
+  redisContext *context = redis_client::connect();
 
-  // Enviar comando SET
-  redisReply *reply = (redisReply *)redisCommand(context, "SET %s %s", "chave", "valor");
-  // Verificar se o comando foi bem-sucedido
-  if (reply->type == REDIS_REPLY_STATUS)
-  {
-    std::cout << "SET realizado: " << reply->str << std::endl;
-  }
-  // Liberar o objeto de resposta
-  freeReplyObject(reply);
+  redis_client::set_key(context, "chave", "valor");
 
-  // Enviar comando GET
-  reply = (redisReply *)redisCommand(context, "GET chave");
-  if (reply->type == REDIS_REPLY_STRING)
-  {
-    std::cout << "GET chave: " << reply->str << std::endl;
-  }
-  freeReplyObject(reply);
-
-  // Fechar a conexão e liberar o contexto
-  redisFree(context);
+  string result = redis_client::get_key(context, "chave");
+  cout << "Valor da chave: " << result << endl;
+  redis_client::disconnect(context);
 
   return 0;
 

@@ -40,7 +40,7 @@ string stack_to_string(const vector<string> &stack)
 
 people_repository::PearsonNotFound::PearsonNotFound() {}
 
-const char *people_repository::PearsonNotFound::what()
+const char *people_repository::PearsonNotFound::what() const noexcept
 {
   return "Pearson não encontrada";
 }

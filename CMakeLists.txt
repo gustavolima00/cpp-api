@@ -15,6 +15,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -O2)
 # Adicione todos os arquivos .cpp na pasta src e src/models
 set(SOURCES "src/models/pearson.cpp" ${SOURCES})
 set(SOURCES "src/clients/database_client.cpp" ${SOURCES})
+set(SOURCES "src/clients/redis_client.cpp" ${SOURCES})
 set(SOURCES "src/repositories/people_repository.cpp" ${SOURCES})
 set(SOURCES "src/requests/base_request_handler.cpp" ${SOURCES})
 set(SOURCES "src/requests/people_requests_handler.cpp" ${SOURCES})

@@ -94,7 +94,8 @@
     "cinttypes": "cpp",
     "expected": "cpp",
     "set": "cpp",
-    "filesystem": "cpp"
+    "filesystem": "cpp",
+    "__memory": "cpp"
   },
   "cmake.sourceDirectory": "/Users/gustavolima/my_c_plus_plus_api",
   "C_Cpp.errorSquiggles": "disabled"
