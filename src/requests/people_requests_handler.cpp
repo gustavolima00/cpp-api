@@ -4,7 +4,7 @@ using namespace base_request_handler;
 
 people_requests_handler::MissingQueryParamException::MissingQueryParamException() {}
 
-const char *people_requests_handler::MissingQueryParamException::what()
+const char *people_requests_handler::MissingQueryParamException::what() const _NOEXCEPT
 {
   return "Missing query param";
 }
@@ -23,6 +23,7 @@ restinio::request_handling_status_t people_requests_handler::on_create_pearson(
   }
   catch (const std::exception &ex)
   {
+    cout << "Error: " << ex.what() << endl;
     response.header().status_line(restinio::status_unprocessable_entity());
     return response.done();
   }

@@ -1,27 +1,46 @@
 #include "repositories/people_repository.hpp"
 
-std::vector<std::string> parse_pg_array(const std::string &pg_array)
+vector<string> stack_string_to_vector(const string &stack_string)
 {
-  std::vector<std::string> result;
-  std::string element;
-  for (std::size_t i = 1; i < pg_array.size() - 1; ++i)
-  { // Ignorar as chaves {}
-    if (pg_array[i] == ',' || pg_array[i] == '}')
+  vector<string> result;
+  string element;
+  for (auto &c : stack_string)
+  {
+    if (c == ',')
     {
       result.push_back(element);
-      element.clear();
+      element = "";
     }
     else
     {
-      element += pg_array[i];
+      element += c;
     }
+  }
+  if (element != "")
+  {
+    result.push_back(element);
+  }
+  return result;
+}
+
+string stack_to_string(const vector<string> &stack)
+{
+  if (stack.empty())
+  {
+    return "";
+  }
+
+  string result = stack[0];
+  for (size_t i = 1; i < stack.size(); ++i)
+  {
+    result += "," + stack[i];
   }
   return result;
 }
 
 people_repository::PearsonNotFound::PearsonNotFound() {}
 
-const char *people_repository::PearsonNotFound::what()
+const char *people_repository::PearsonNotFound::what() const _NOEXCEPT
 {
   return "Pearson não encontrada";
 }
@@ -31,24 +50,17 @@ string people_repository::create_pearson(const Pearson &pearson)
   auto connection = database::connect();
   pqxx::work txn(connection);
 
-  vector<string> stack{};
+  string stack_as_string;
   if (pearson.stack.has_value())
   {
-    stack = *pearson.stack;
-  }
-
-  string stack_as_string;
-  for (auto &item : stack)
-  {
-    stack_as_string += item + ",";
+    stack_as_string = stack_to_string(*pearson.stack);
   }
 
   pqxx::result result = txn.exec_params(
-      "INSERT INTO people (name, nickname, birth_date, stack, stack_as_string) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+      "INSERT INTO people (name, nickname, birth_date, stack_as_string) VALUES ($1, $2, $3, $4) RETURNING id",
       pearson.name,
       pearson.nickname,
       pearson.birth_date,
-      stack,
       stack_as_string);
   txn.commit();
 
@@ -63,7 +75,7 @@ Pearson people_repository::get_pearson(string &id)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT name, nickname, birth_date, stack FROM people WHERE id = $1 LIMIT 1",
+      "SELECT name, nickname, birth_date, stack_as_string FROM people WHERE id = $1 LIMIT 1",
       id);
 
   if (result.empty())
@@ -75,14 +87,8 @@ Pearson people_repository::get_pearson(string &id)
   string name = row[0].as<string>();
   string nickname = row[1].as<string>();
   string birth_date = row[2].as<string>();
-  string raw_stack = row[3].as<string>();
-  vector<string> stack = parse_pg_array(raw_stack);
-
-  cout << "id: " << id << endl;
-  cout << "nome: " << name << endl;
-  cout << "apelido: " << nickname << endl;
-  cout << "nascimento: " << birth_date << endl;
-  cout << "raw_stack: " << raw_stack << endl;
+  string stack_as_string = row[3].as<string>();
+  vector<string> stack = stack_string_to_vector(stack_as_string);
 
   return Pearson(id, name, nickname, birth_date, stack);
 }
@@ -93,7 +99,8 @@ vector<Pearson> people_repository::search_people(string &term)
   pqxx::work txn(connection);
 
   pqxx::result result = txn.exec_params(
-      "SELECT id, name, nickname, birth_date, stack FROM people WHERE name % $1 OR nickname % $1 OR stack_as_string % $1 LIMIT 50", term);
+      "SELECT id, name, nickname, birth_date, stack_as_string FROM people WHERE name LIKE $1 OR nickname LIKE $1 OR stack_as_string LIKE $1",
+      "%" + term + "%");
 
   vector<Pearson> people;
   for (auto row : result)
@@ -102,8 +109,8 @@ vector<Pearson> people_repository::search_people(string &term)
     string name = row[1].as<string>();
     string nickname = row[2].as<string>();
     string birth_date = row[3].as<string>();
-    string raw_stack = row[4].as<string>();
-    vector<string> stack = parse_pg_array(raw_stack);
+    string stack_as_string = row[4].as<string>();
+    vector<string> stack = stack_string_to_vector(stack_as_string);
 
     people.push_back(Pearson(id, name, nickname, birth_date, stack));
   }

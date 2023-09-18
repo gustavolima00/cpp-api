@@ -93,7 +93,8 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "expected": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "filesystem": "cpp"
   },
   "cmake.sourceDirectory": ".",
   "C_Cpp.errorSquiggles": "disabled"

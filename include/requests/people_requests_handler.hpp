@@ -27,6 +27,6 @@ namespace people_requests_handler
     {
     public:
         MissingQueryParamException();
-        const char *what();
+        const char *what() const _NOEXCEPT;
     };
 };
