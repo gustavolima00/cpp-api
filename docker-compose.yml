@@ -3,6 +3,7 @@ services:
   api1:
     build: .
     hostname: api1
+    restart: always
     depends_on:
       - db
       - redis
@@ -21,6 +22,7 @@ services:
   api2:
     build: .
     hostname: api2
+    restart: always
     depends_on:
       - db
       - redis

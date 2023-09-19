@@ -63,28 +63,25 @@ int main()
 
   std::thread worker_thread(worker);
 
-  while (true)
+  try
   {
-    try
-    {
-      using traits_t =
-          restinio::traits_t<
-              restinio::asio_timer_manager_t,
-              restinio::single_threaded_ostream_logger_t,
-              router_t>;
+    using traits_t =
+        restinio::traits_t<
+            restinio::asio_timer_manager_t,
+            restinio::single_threaded_ostream_logger_t,
+            router_t>;
 
-      restinio::run(
-          restinio::on_this_thread<traits_t>()
-              .address("0.0.0.0")
-              .port(std::atoi(server_port))
-              .request_handler(server_handler())
-              .read_next_http_message_timelimit(3600s)
-              .write_http_response_timelimit(3600s)
-              .handle_request_timeout(3600s));
-    }
-    catch (const std::exception &ex)
-    {
-      std::cerr << "Error: " << ex.what() << std::endl;
-    }
+    restinio::run(
+        restinio::on_this_thread<traits_t>()
+            .address("0.0.0.0")
+            .port(std::atoi(server_port))
+            .request_handler(server_handler())
+            .read_next_http_message_timelimit(3600s)
+            .write_http_response_timelimit(3600s)
+            .handle_request_timeout(3600s));
+  }
+  catch (const std::exception &ex)
+  {
+    std::cerr << "Error: " << ex.what() << std::endl;
   }
 }

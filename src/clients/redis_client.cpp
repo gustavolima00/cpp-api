@@ -50,7 +50,7 @@ string redis_client::get_key(redisContext *context, const char *key)
   redisReply *reply = (redisReply *)redisCommand(context, "GET %s", key);
   if (reply->type != REDIS_REPLY_STRING)
   {
-    throw RedisClientException("Erro ao executar o comando GET");
+    return "";
   }
   string value(reply->str);
   freeReplyObject(reply);
