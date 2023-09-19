@@ -128,7 +128,6 @@ string people_repository::create_pearson(Pearson &pearson)
   string redis_key = "people:" + id;
 
   string serialized_pearson = json_dto::to_json(pearson);
-  cout << "Serialized pearson: " << serialized_pearson << endl;
   redis_client::push_on_queue(redis_connection, "people", serialized_pearson.c_str());
   redis_client::set_key(redis_connection, redis_key.c_str(), serialized_pearson.c_str());
   redis_client::disconnect(redis_connection);
@@ -138,9 +137,13 @@ string people_repository::create_pearson(Pearson &pearson)
 
 void people_repository::create_cached_people()
 {
-
   // Getting data from redis
   auto redis_connection = redis_client::connect();
+  int queue_size = redis_client::get_queue_size(redis_connection, "people");
+  if (queue_size == 0)
+  {
+    return;
+  }
   vector<string> people_as_strings = redis_client::get_all_from_queue(redis_connection, "people");
   vector<string> redis_keys;
   vector<Pearson> people;
@@ -180,7 +183,6 @@ void people_repository::create_cached_people()
     }
   }
 
-  cout << "Executing query: " << sql.str() << endl;
   txn.exec0(sql.str());
 
   txn.commit();
