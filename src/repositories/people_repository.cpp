@@ -183,6 +183,7 @@ void people_repository::create_cached_people()
     }
   }
 
+  cout << "Executing query: " << sql.str() << endl;
   txn.exec0(sql.str());
 
   txn.commit();

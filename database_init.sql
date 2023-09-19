@@ -2,9 +2,9 @@ CREATE EXTENSION pg_trgm;
 
 CREATE TABLE people(
     id uuid default gen_random_uuid() primary key,
-    nickname varchar(33) not null,
-    name varchar(101) not null,
-    birth_date varchar(11) not null,
+    nickname varchar(300) not null,
+    name varchar(300) not null,
+    birth_date varchar(20) not null,
     stack_as_string text
 );
 
