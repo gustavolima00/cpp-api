@@ -3,7 +3,7 @@
 #include <restinio/all.hpp>
 #include "requests/people_router.hpp"
 #include <cstdlib>
-#include "clients/redis_client.hpp"
+#include "repositories/people_repository.hpp"
 
 #define DEFAULT_SERVER_PORT "8080"
 
@@ -17,6 +17,16 @@ auto server_handler()
   return router;
 }
 
+void print_people()
+{
+  string term = "";
+  cout << "People count: " << people_repository::count_people() << endl;
+  vector<Pearson> people = people_repository::search_people(term);
+  for (auto &person : people)
+  {
+    cout << person.id << " " << person.name << " " << person.birth_date << endl;
+  }
+}
 int main()
 {
   using namespace std::chrono;
@@ -25,6 +35,26 @@ int main()
   {
     server_port = DEFAULT_SERVER_PORT;
   }
+
+  print_people();
+  Pearson person;
+  person.name = "João";
+  person.nickname = "Joãozinho";
+  person.birth_date = "1999-01-01";
+  person.stack = {"C++", "C", "Python"};
+  people_repository::create_pearson(person);
+  print_people();
+
+  person.name = "Maria";
+  person.nickname = "Mariazinha";
+  person.birth_date = "1999-01-01";
+  person.stack = {"C++", "C", "Python"};
+  people_repository::create_pearson(person);
+
+  print_people();
+  cout << "Creating cached people" << endl;
+  people_repository::create_cached_people();
+  print_people();
 
   try
   {

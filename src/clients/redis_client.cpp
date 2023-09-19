@@ -57,6 +57,16 @@ string redis_client::get_key(redisContext *context, const char *key)
   return value;
 }
 
+void redis_client::delete_key(redisContext *context, const char *key)
+{
+  redisReply *reply = (redisReply *)redisCommand(context, "DEL %s", key);
+  if (reply->type != REDIS_REPLY_INTEGER)
+  {
+    throw RedisClientException("Erro ao executar o comando DEL");
+  }
+  freeReplyObject(reply);
+}
+
 void redis_client::disconnect(redisContext *context)
 {
   redisFree(context);
@@ -72,4 +82,48 @@ int redis_client::get_queue_size(redisContext *context, const char *queue_name)
   int size = reply->integer;
   freeReplyObject(reply);
   return size;
+}
+
+void redis_client::push_on_queue(redisContext *context, const char *queue_name, const char *value)
+{
+  redisCommand(context, "LPUSH %s %s", queue_name, value);
+}
+
+string redis_client::pop_from_queue(redisContext *context, const char *queue_name)
+{
+  redisReply *reply = (redisReply *)redisCommand(context, "RPOP %s", queue_name);
+  if (reply->type != REDIS_REPLY_STRING)
+  {
+    throw RedisClientException("Erro ao executar o comando RPOP");
+  }
+  string value(reply->str);
+  freeReplyObject(reply);
+
+  return value;
+}
+
+vector<string> redis_client::get_all_from_queue(redisContext *context, const char *queue_name)
+{
+  redisReply *reply = (redisReply *)redisCommand(context, "LRANGE %s 0 -1", queue_name);
+  if (reply == NULL)
+  {
+    return vector<string>();
+  }
+  if (reply->type != REDIS_REPLY_ARRAY)
+  {
+    freeReplyObject(reply);
+    throw RedisClientException("Erro ao executar o comando LRANGE");
+  }
+  vector<string> values;
+  for (size_t i = 0; i < reply->elements; i++)
+  {
+    values.push_back(reply->element[i]->str);
+  }
+  freeReplyObject(reply);
+  return values;
+}
+
+void redis_client::delete_queue(redisContext *context, const char *queue_name)
+{
+  redisCommand(context, "DEL %s", queue_name);
 }

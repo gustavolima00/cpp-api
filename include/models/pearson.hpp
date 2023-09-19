@@ -13,7 +13,7 @@ public:
   template <typename JSON_IO>
   void json_io(JSON_IO &io)
   {
-    io &json_dto::mandatory("nome", name) & json_dto::mandatory("apelido", nickname) & json_dto::mandatory("nascimento", birth_date) & json_dto::optional("stack", stack, nullptr);
+    io &json_dto::optional("id", id, "") & json_dto::mandatory("nome", name) & json_dto::mandatory("apelido", nickname) & json_dto::mandatory("nascimento", birth_date) & json_dto::optional("stack", stack, nullptr);
   }
 
   string id;
